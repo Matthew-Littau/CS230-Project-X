@@ -5,7 +5,7 @@
 // Project:		Project X
 // Course:		CS230SU24
 //
-// Copyright © 2024 DigiPen (USA) Corporation.
+// Copyright Â© 2024 DigiPen (USA) Corporation.
 //
 //------------------------------------------------------------------------------
 
@@ -53,6 +53,17 @@ void ParticleUpdate(Particle* particle, ParticleContainer* container, float dt)
 	UNREFERENCED_PARAMETER(particle);
 	UNREFERENCED_PARAMETER(container);
 	UNREFERENCED_PARAMETER(dt);
+
+	if (particle) {
+		particle->lifetime -= dt;
+		if (particle->lifetime > 0) {
+			particle->position.x += particle->velocity.x;
+			particle->position.y += particle->velocity.y;
+		}
+		else {
+			ParticleContainerKillParticle(container, particle);
+		}
+	}
 }
 
 // Render a Particle object.
@@ -63,6 +74,11 @@ void ParticleRender(const Particle* particle, const Mesh* mesh)
 {
 	// @@@TEMPORARY:
 	UNREFERENCED_PARAMETER(particle);
+
+	if (particle->lifetime > 0) {
+		DGL_Graphics_SetCB_TransformData(&particle->position, &particle->scale, 0);
+		DGL_Graphics_SetCB_TransformMatrix(&mesh);
+	}
 }
 
 //------------------------------------------------------------------------------
